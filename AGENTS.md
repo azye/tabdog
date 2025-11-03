@@ -54,7 +54,7 @@ tabstash/
 ```
 
 ### manifest.json
-- Defines extension permissions: `tabs`, `storage`
+- Defines extension permissions: `tabs`, `storage`, `contextMenus`
 - Configures action handler and service worker (src/background.js)
 - Specifies icon sizes: 16px, 32px, 48px, 128px
 - Web Store fields: `homepage_url`, `author`, `privacy_policy_url`
@@ -92,7 +92,9 @@ tabstash/
 - Service worker for extension lifecycle
 - **saveAndCloseAllTabs()**: Saves all non-extension tabs (including chrome:// pages) and closes them
 - **openTabManager()**: Opens or activates extension tab, reloads existing tab
-- Handles extension installation and action clicks
+- **clearAllSavedTabs()**: Removes all saved tabs from storage
+- **Context Menu**: Creates custom right-click menu for extension icon with save, open manager, and clear options
+- Handles extension installation, action clicks, and context menu interactions
 
 ## Data Storage
 

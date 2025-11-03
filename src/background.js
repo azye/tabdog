@@ -9,6 +9,46 @@
 // Extension lifecycle: handle installation
 chrome.runtime.onInstalled.addListener(() => {
   console.log('TabStash extension installed');
+  
+  // Create context menu items
+  chrome.contextMenus.create({
+    id: 'save-tabs',
+    title: 'Save & Close All Tabs',
+    contexts: ['action']
+  });
+  
+  chrome.contextMenus.create({
+    id: 'open-manager',
+    title: 'Open Tab Manager',
+    contexts: ['action']
+  });
+  
+  chrome.contextMenus.create({
+    id: 'separator',
+    type: 'separator',
+    contexts: ['action']
+  });
+  
+  chrome.contextMenus.create({
+    id: 'clear-all',
+    title: 'Clear All Saved Tabs',
+    contexts: ['action']
+  });
+});
+
+// Handle context menu clicks
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  switch (info.menuItemId) {
+    case 'save-tabs':
+      saveAndCloseAllTabs();
+      break;
+    case 'open-manager':
+      openTabManager();
+      break;
+    case 'clear-all':
+      clearAllSavedTabs();
+      break;
+  }
 });
 
 // Handle extension icon click: save tabs and open manager
@@ -73,5 +113,12 @@ function openTabManager() {
         pinned: true
       });
     }
+  });
+}
+
+// Clear all saved tabs from storage
+function clearAllSavedTabs() {
+  chrome.storage.local.set({ savedTabs: [] }, () => {
+    console.log('All saved tabs cleared');
   });
 }
