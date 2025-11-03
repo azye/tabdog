@@ -81,8 +81,13 @@
       border-bottom: 1px solid #504945;
       cursor: pointer;
       transition: background-color 0.2s;
-      border-radius: 4px;
-      margin-bottom: 5px;
+      margin: 5px 0;
+    }
+    .tab-item:last-child {
+      border-bottom: none;
+    }
+    .session-group:has(.tab-item:only-child) .tab-item {
+      border-bottom: none;
     }
     .tab-item:hover {
       background-color: #504945;
@@ -130,7 +135,7 @@
       background-color: #d65d0e;
     }
     .tab-content {
-      padding: 0 15px 15px 15px;
+      padding: 0 15px 0 15px;
     }
     .tab-title {
       font-weight: bold;
