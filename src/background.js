@@ -18,6 +18,12 @@ chrome.runtime.onInstalled.addListener(() => {
   });
   
   chrome.contextMenus.create({
+    id: 'save-tabs-except-current',
+    title: 'Save & Close All Except Current',
+    contexts: ['action']
+  });
+  
+  chrome.contextMenus.create({
     id: 'open-manager',
     title: 'Open Tab Manager',
     contexts: ['action']
@@ -41,6 +47,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   switch (info.menuItemId) {
     case 'save-tabs':
       saveAndCloseAllTabs();
+      break;
+    case 'save-tabs-except-current':
+      saveAndCloseAllTabsExceptCurrent();
       break;
     case 'open-manager':
       openTabManager();
@@ -103,7 +112,7 @@ function openTabManager() {
         const tabsToClose = tabs.slice(1).map(tab => tab.id);
         chrome.tabs.remove(tabsToClose);
       }
-      // Reload the existing extension tab
+      // Reload the existing extension tab to update content
       chrome.tabs.reload(tabs[0].id);
     } else {
       // No extension tab exists, create new one
@@ -113,6 +122,43 @@ function openTabManager() {
         pinned: true
       });
     }
+  });
+}
+
+// Save all non-extension tabs except the current one and close them
+function saveAndCloseAllTabsExceptCurrent() {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    const extensionUrl = chrome.runtime.getURL('');
+    const tabsToSave = tabs.filter(tab => !tab.url.includes(extensionUrl) && !tab.active);
+    
+    if (tabsToSave.length === 0) {
+      console.log('No tabs to save (excluding current tab)');
+      openTabManager();
+      return;
+    }
+    
+    // Create a session group with timestamp
+    const sessionId = Date.now();
+    const tabDataArray = tabsToSave.map(tab => ({
+      title: tab.title,
+      url: tab.url,
+      favicon: tab.favIconUrl,
+      timestamp: sessionId,
+      sessionId
+    }));
+    
+    chrome.storage.local.get(['savedTabs'], (result) => {
+      const savedTabs = result.savedTabs || [];
+      savedTabs.unshift(...tabDataArray);
+      chrome.storage.local.set({ savedTabs }, () => {
+        // Close all non-extension, non-active tabs in reverse order so Ctrl+Shift+T restores them correctly
+        const tabIdsToClose = tabsToSave.map(tab => tab.id).reverse();
+        chrome.tabs.remove(tabIdsToClose, () => {
+          // Small delay to ensure storage is fully updated before opening manager
+          setTimeout(() => openTabManager(), 100);
+        });
+      });
+    });
   });
 }
 

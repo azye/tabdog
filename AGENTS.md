@@ -93,7 +93,8 @@ tabstash/
 - **saveAndCloseAllTabs()**: Saves all non-extension tabs (including chrome:// pages) and closes them
 - **openTabManager()**: Opens or activates extension tab, reloads existing tab
 - **clearAllSavedTabs()**: Removes all saved tabs from storage
-- **Context Menu**: Creates custom right-click menu for extension icon with save, open manager, and clear options
+- **saveAndCloseAllTabsExceptCurrent()**: Saves all tabs except the currently active tab and closes them, then opens extension tab manager
+- **Context Menu**: Creates custom right-click menu for extension icon with save, save except current, open manager, and clear options
 - Handles extension installation, action clicks, and context menu interactions
 
 ## Data Storage
