@@ -69,11 +69,13 @@ tabstash/
 - **escapeHtml()**: Prevents XSS attacks by escaping HTML
 - Individual tab restoration on click
 - **Tab Counter Display**: Shows total count of saved tabs in header
+- **Dark Gruvbox Theme**: Uses authentic Gruvbox color palette with dark backgrounds (#282828, #3c3836), green accents (#8ec07c), and proper text contrast (#ebdbb2, #bdae93)
 
 ### pages/popup.html & src/popup.js (Legacy Popup)
 - **saveAndCloseAllTabs()**: Saves non-active tabs and closes them
 - **loadSavedTabs()**: Displays saved tabs grouped by session
 - **restoreSession()**: Opens all tabs from a saved session
+- **Dark Gruvbox Theme**: Consistent dark theme matching main interface with Gruvbox colors
 
 ### icons/
 - **icon16.png**: 16x16 pixel PNG version for toolbar
@@ -259,6 +261,26 @@ function createTabElement(tab) {
 - No search functionality for saved tabs
 - No export/import capabilities
 
+## UI Theme
+
+### Dark Gruvbox Theme
+The extension uses a dark Gruvbox color scheme for both the main tab interface and popup:
+- **Background Colors**: 
+  - Primary: #282828 (dark background)
+  - Secondary: #3c3836 (container background)
+  - Tertiary: #504945 (hover states, borders)
+- **Text Colors**:
+  - Primary: #ebdbb2 (light text)
+  - Secondary: #bdae93 (muted text)
+  - Accent: #8ec07c (green for primary actions)
+- **Action Colors**:
+  - Save/Primary: #8ec07c (green) with #a8b865 hover
+  - Delete/Danger: #cc241d (red) with #d65d0e hover
+- **Borders**: #504945 for subtle separation
+- **Headers**: #8ec07c for section headers and accents
+
+The theme provides excellent contrast and readability while maintaining the authentic Gruvbox aesthetic that's popular in developer tools.
+
 ## Potential Enhancements
 
 When considering new features, maintain:
@@ -266,6 +288,7 @@ When considering new features, maintain:
 - Fast performance with many tabs
 - Backward compatibility with existing saved tabs
 - Manifest V3 compliance
+- Consistent dark Gruvbox theming for any new UI elements
 
 ## Security Considerations
 
