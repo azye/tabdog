@@ -4,7 +4,7 @@
 Save and organize browser tabs with smart session management.
 
 ## Detailed Description
-TabStash is the perfect tool for anyone who works with multiple browser tabs. Whether you're a developer juggling projects, a researcher gathering sources, or just someone who likes to keep their workspace organized, TabStash makes tab management effortless.
+TabDog is the perfect tool for anyone who works with multiple browser tabs. Whether you're a developer juggling projects, a researcher gathering sources, or just someone who likes to keep their workspace organized, TabDog makes tab management effortless.
 
 ## Key Features
 🔥 **One-Click Tab Stashing**: Save all tabs instantly with a single click
@@ -21,7 +21,7 @@ TabStash is the perfect tool for anyone who works with multiple browser tabs. Wh
 - Anyone who wants to declutter their browser workspace
 
 ## How It Works
-1. Click the TabStash icon to save all current tabs
+1. Click the hotdog icon to save all current tabs
 2. Tabs are automatically grouped into sessions
 3. Access saved tabs anytime from the manager interface
 4. Restore individual tabs or entire sessions

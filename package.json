@@ -1,5 +1,5 @@
 {
-  "name": "tabstash",
+  "name": "tabdog",
   "version": "1.0.0",
   "description": "A Chrome extension for saving and organizing browser tabs",
   "scripts": {

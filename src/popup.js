@@ -1,5 +1,5 @@
 /**
- * TabStash Chrome Extension - Popup Interface
+ * TabDog Chrome Extension - Popup Interface
  *
  * Legacy popup interface for saving and managing tabs.
  * Provides quick access to save functionality and displays saved tabs.

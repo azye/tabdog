@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "TabStash",
+  "name": "TabDog",
   "version": "1.0",
   "description": "Save and organize your browser tabs with smart session management",
   "permissions": [
@@ -9,7 +9,7 @@
     "contextMenus"
   ],
   "action": {
-    "default_title": "TabStash"
+    "default_title": "TabDog"
   },
   "commands": {
     "save-all-tabs": {

@@ -1,5 +1,5 @@
 /**
- * TabStash Chrome Extension - Background Service Worker
+ * TabDog Chrome Extension - Background Service Worker
  *
  * Handles extension lifecycle, tab management, and storage operations.
  * This service worker runs when the extension is installed or when the
@@ -8,7 +8,7 @@
 
 // Extension lifecycle: handle installation
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('TabStash extension installed');
+  console.log('TabDog extension installed');
   
   chrome.contextMenus.create({
     id: 'open-manager',

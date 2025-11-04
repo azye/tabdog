@@ -99,7 +99,7 @@ describe('Tab Management Functions', () => {
       const mockTabs = [
         { id: 1, url: 'https://example.com', title: 'Example' },
         { id: 2, url: 'chrome://extensions/', title: 'Extensions' },
-        { id: 3, url: 'chrome-extension://test-id/tab.html', title: 'TabStash' },
+        { id: 3, url: 'chrome-extension://test-id/tab.html', title: 'TabDog' },
         { id: 4, url: 'chrome://settings/', title: 'Settings' }
       ];
 

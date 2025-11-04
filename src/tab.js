@@ -1,5 +1,5 @@
 /**
- * TabStash Chrome Extension - Main Tab Interface
+ * TabDog Chrome Extension - Main Tab Interface
  *
  * Primary interface for managing saved tabs and sessions.
  * Provides full functionality including saving, restoring, clearing,

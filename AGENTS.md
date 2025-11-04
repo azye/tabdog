@@ -1,10 +1,10 @@
-# TabStash Chrome Extension - LLM Agent Documentation
+# TabDog Chrome Extension - LLM Agent Documentation
 
-This document provides detailed guidance for LLM agents working on the TabStash Chrome extension codebase.
+This document provides detailed guidance for LLM agents working on the TabDog Chrome extension codebase.
 
 ## Project Overview
 
-TabStash is a Manifest V3 Chrome extension that allows users to save and organize browser tabs. The extension provides a simple interface to stash multiple tabs at once and restore them later.
+TabDog is a Manifest V3 Chrome extension that allows users to save and organize browser tabs. The extension provides a simple interface to stash multiple tabs at once and restore them later.
 
 ## Architecture
 
@@ -38,7 +38,7 @@ TabStash is a Manifest V3 Chrome extension that allows users to save and organiz
 
 ### Project Structure
 ```
-tabstash/
+tabdog/
 ├── src/                    # JavaScript source files
 │   ├── background.js       # Service worker
 │   ├── popup.js           # Legacy popup interface
