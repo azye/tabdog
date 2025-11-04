@@ -11,6 +11,26 @@
   "action": {
     "default_title": "TabStash"
   },
+  "commands": {
+    "save-all-tabs": {
+      "suggested_key": {
+        "default": "Alt+Shift+F"
+      },
+      "description": "Save & Close All Tabs"
+    },
+    "save-except-current": {
+      "suggested_key": {
+        "default": "Alt+Shift+G"
+      },
+      "description": "Save & Close All Except Current"
+    },
+    "open-manager": {
+      "suggested_key": {
+        "default": "Alt+Shift+M"
+      },
+      "description": "Open Tab Manager"
+    }
+  },
   "background": {
     "service_worker": "src/background.js"
   },

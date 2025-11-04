@@ -57,6 +57,7 @@ tabstash/
 - Defines extension permissions: `tabs`, `storage`, `contextMenus`
 - Configures action handler and service worker (src/background.js)
 - Specifies icon sizes: 16px, 32px, 48px, 128px
+- Defines keyboard shortcuts for main features
 - Web Store fields: `homepage_url`, `author`, `privacy_policy_url`
 
 ### pages/tab.html & src/tab.js (Main Interface)
@@ -95,7 +96,8 @@ tabstash/
 - **clearAllSavedTabs()**: Removes all saved tabs from storage
 - **saveAndCloseAllTabsExceptCurrent()**: Saves all tabs except the currently active tab and closes them, keeping user on current tab
 - **Context Menu**: Creates custom right-click menu for extension icon with save, save except current, open manager, and clear options
-- Handles extension installation, action clicks, and context menu interactions
+- **Keyboard Shortcuts**: Handles command events for hotkey bindings (Ctrl+Shift+S/E/T/D)
+- Handles extension installation, action clicks, context menu interactions, and keyboard shortcuts
 
 ## Data Storage
 
@@ -161,6 +163,9 @@ npm install
 - `chrome.storage.local.get/set()`: Persist data
 - `chrome.action.onClicked`: Handle extension icon clicks
 - `chrome.runtime.getURL()`: Get extension URLs
+- `chrome.contextMenus.create()`: Create context menu items
+- `chrome.contextMenus.onClicked`: Handle context menu clicks
+- `chrome.commands.onCommand`: Handle keyboard shortcut commands
 
 ### Common Patterns
 
@@ -284,6 +289,16 @@ The extension uses a dark Gruvbox color scheme for both the main tab interface a
 
 The theme provides excellent contrast and readability while maintaining the authentic Gruvbox aesthetic that's popular in developer tools.
 
+## Keyboard Shortcuts
+
+The extension supports the following default keyboard shortcuts:
+- **Ctrl+Alt+1** (Cmd+Alt+1 on Mac): Save & Close All Tabs
+- **Ctrl+Alt+2** (Cmd+Alt+2 on Mac): Save & Close All Except Current
+- **Ctrl+Alt+3** (Cmd+Alt+3 on Mac): Open Tab Manager
+- **Ctrl+Alt+4** (Cmd+Alt+4 on Mac): Clear All Saved Tabs
+
+Users can customize these shortcuts in Chrome's extension settings at `chrome://extensions/shortcuts`.
+
 ## Potential Enhancements
 
 When considering new features, maintain:
@@ -292,6 +307,7 @@ When considering new features, maintain:
 - Backward compatibility with existing saved tabs
 - Manifest V3 compliance
 - Consistent dark Gruvbox theming for any new UI elements
+- Keyboard shortcut support for new features
 
 ## Security Considerations
 

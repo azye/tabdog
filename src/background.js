@@ -60,6 +60,24 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 });
 
+// Handle keyboard shortcuts
+chrome.commands.onCommand.addListener((command) => {
+  switch (command) {
+    case 'save-all-tabs':
+      saveAndCloseAllTabs();
+      openTabManager();
+      break;
+    case 'save-except-current':
+      saveAndCloseAllTabsExceptCurrent();
+
+      setTimeout(() => openTabManager(false), 100);
+      break;
+    case 'open-manager':
+      openTabManager();
+      break;
+  }
+});
+
 // Handle extension icon click: save tabs and open manager
 chrome.action.onClicked.addListener((tab) => {
   saveAndCloseAllTabs(() => {
@@ -104,9 +122,10 @@ function saveAndCloseAllTabs(callback) {
 // Open or activate the tab manager interface
 function openTabManager(active=true) {
   chrome.tabs.query({ url: chrome.runtime.getURL('../pages/tab.html') }, (tabs) => {
+    debugger
     if (tabs.length > 0) {
       // Extension tab exists, make it active
-      chrome.tabs.update(tabs[0].id, { active: true });
+      // chrome.tabs.update(tabs[0].id, { active: true });
       // Close any additional extension tabs
       if (tabs.length > 1) {
         const tabsToClose = tabs.slice(1).map(tab => tab.id);
@@ -133,7 +152,7 @@ function saveAndCloseAllTabsExceptCurrent() {
     
     if (tabsToSave.length === 0) {
       console.log('No tabs to save (excluding current tab)');
-      openTabManager();
+      openTabManager(false);
       return;
     }
     
