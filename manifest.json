@@ -14,13 +14,13 @@
   "commands": {
     "save-all-tabs": {
       "suggested_key": {
-        "default": "Alt+Shift+F"
+        "default": "Alt+Shift+S"
       },
       "description": "Save & Close All Tabs"
     },
     "save-except-current": {
       "suggested_key": {
-        "default": "Alt+Shift+G"
+        "default": "Alt+Shift+F"
       },
       "description": "Save & Close All Except Current"
     },
@@ -29,6 +29,12 @@
         "default": "Alt+Shift+M"
       },
       "description": "Open Tab Manager"
+    },
+    "save-current-tab": {
+      "suggested_key": {
+        "default": "Alt+Shift+G"
+      },
+      "description": "Save & Close Current Tab"
     }
   },
   "background": {

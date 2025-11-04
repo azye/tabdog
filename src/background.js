@@ -10,30 +10,37 @@
 chrome.runtime.onInstalled.addListener(() => {
   console.log('TabStash extension installed');
   
-  // Create context menu items
-  chrome.contextMenus.create({
-    id: 'save-tabs',
-    title: 'Save & Close All Tabs',
-    contexts: ['action']
-  });
-  
-  chrome.contextMenus.create({
-    id: 'save-tabs-except-current',
-    title: 'Save & Close All Except Current',
-    contexts: ['action']
-  });
-  
   chrome.contextMenus.create({
     id: 'open-manager',
     title: 'Open Tab Manager',
     contexts: ['action']
   });
-  
+    
   chrome.contextMenus.create({
     id: 'separator',
     type: 'separator',
     contexts: ['action']
   });
+
+  // Create context menu items
+  chrome.contextMenus.create({
+    id: 'save-tabs',
+    title: 'Save + Close All Tabs',
+    contexts: ['action']
+  });
+  
+  chrome.contextMenus.create({
+    id: 'save-tabs-except-current',
+    title: 'Save + Close All Tabs Except Current Tab',
+    contexts: ['action']
+  });
+  
+  chrome.contextMenus.create({
+    id: 'save-current-tab',
+    title: 'Save + Close Current Tab',
+    contexts: ['action']
+  });
+
   
   chrome.contextMenus.create({
     id: 'clear-all',
@@ -51,6 +58,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     case 'save-tabs-except-current':
       saveAndCloseAllTabsExceptCurrent();
       break;
+    case 'save-current-tab':
+      saveAndCloseCurrentTab();
+      break;
     case 'open-manager':
       openTabManager();
       break;
@@ -65,34 +75,32 @@ chrome.commands.onCommand.addListener((command) => {
   switch (command) {
     case 'save-all-tabs':
       saveAndCloseAllTabs();
-      openTabManager();
       break;
     case 'save-except-current':
       saveAndCloseAllTabsExceptCurrent();
-
-      setTimeout(() => openTabManager(false), 100);
       break;
     case 'open-manager':
       openTabManager();
+      break;
+    case 'save-current-tab':
+      saveAndCloseCurrentTab();
       break;
   }
 });
 
 // Handle extension icon click: save tabs and open manager
 chrome.action.onClicked.addListener((tab) => {
-  saveAndCloseAllTabs(() => {
-    openTabManager();
-  });
+  saveAndCloseAllTabs();
 });
 
 // Save all non-extension tabs to storage and close them
-function saveAndCloseAllTabs(callback) {
+function saveAndCloseAllTabs() {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     const extensionUrl = chrome.runtime.getURL('');
     const tabsToSave = tabs.filter(tab => !tab.url.includes(extensionUrl));
 
     if (tabsToSave.length === 0) {
-      if (callback) callback();
+      openTabManager();
       return;
     }
 
@@ -109,7 +117,7 @@ function saveAndCloseAllTabs(callback) {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
       savedTabs.unshift(...tabDataArray);
-      if (callback) callback();
+      openTabManager();
       chrome.storage.local.set({ savedTabs }, () => {
         // Close all non-extension tabs in reverse order so Ctrl+Shift+T restores them correctly
         const tabIdsToClose = tabsToSave.map(tab => tab.id).reverse();
@@ -122,7 +130,6 @@ function saveAndCloseAllTabs(callback) {
 // Open or activate the tab manager interface
 function openTabManager(active=true) {
   chrome.tabs.query({ url: chrome.runtime.getURL('../pages/tab.html') }, (tabs) => {
-    debugger
     if (tabs.length > 0) {
       // Extension tab exists, make it active
       // chrome.tabs.update(tabs[0].id, { active: true });
@@ -176,6 +183,43 @@ function saveAndCloseAllTabsExceptCurrent() {
           // Small delay to ensure storage is fully updated before opening manager
           setTimeout(() => openTabManager(false), 100);
         });
+      });
+    });
+  });
+}
+
+// Save and close the current tab
+function saveAndCloseCurrentTab() {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs.length === 0) return;
+    
+    const currentTab = tabs[0];
+    const extensionUrl = chrome.runtime.getURL('');
+    
+    // Don't save extension tabs
+    if (currentTab.url.includes(extensionUrl)) {
+      console.log('Cannot save extension tab');
+      return;
+    }
+    
+    // Create a session group with timestamp
+    const sessionId = Date.now();
+    const tabData = {
+      title: currentTab.title,
+      url: currentTab.url,
+      favicon: currentTab.favIconUrl,
+      timestamp: sessionId,
+      sessionId
+    };
+    
+    chrome.storage.local.get(['savedTabs'], (result) => {
+      const savedTabs = result.savedTabs || [];
+      savedTabs.unshift(tabData);
+      chrome.storage.local.set({ savedTabs }, () => {
+        // Open extension tab in background
+        openTabManager(false);
+        // Close current tab - Chrome will automatically activate next tab
+        chrome.tabs.remove(currentTab.id);
       });
     });
   });

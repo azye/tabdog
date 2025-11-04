@@ -95,7 +95,8 @@ tabstash/
 - **openTabManager()**: Opens or activates extension tab, reloads existing tab
 - **clearAllSavedTabs()**: Removes all saved tabs from storage
 - **saveAndCloseAllTabsExceptCurrent()**: Saves all tabs except the currently active tab and closes them, keeping user on current tab
-- **Context Menu**: Creates custom right-click menu for extension icon with save, save except current, open manager, and clear options
+- **saveAndCloseCurrentTab()**: Saves and closes the currently active tab, moving to next tab like normal close behavior
+- **Context Menu**: Creates custom right-click menu for extension icon with save, save except current, save current, open manager, and clear options
 - **Keyboard Shortcuts**: Handles command events for hotkey bindings (Ctrl+Shift+S/E/T/D)
 - Handles extension installation, action clicks, context menu interactions, and keyboard shortcuts
 

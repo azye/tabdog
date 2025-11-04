@@ -24,7 +24,7 @@ module.exports = {
     'comma-dangle': ['error', 'never'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
-    indent: ['error', 2],
+    indent: ['error', 2, { SwitchCase: 1 }],
     'space-before-function-paren': ['error', 'never'],
     'keyword-spacing': 'error',
     'space-infix-ops': 'error',
@@ -32,6 +32,13 @@ module.exports = {
     'array-bracket-spacing': ['error', 'never'],
     'no-multiple-empty-lines': ['error', { max: 2 }],
     'brace-style': ['error', '1tbs'],
-    curly: 'error'
+    curly: 'error',
+    'space-in-parens': ['error', 'never'],
+    'padded-blocks': ['error', 'never'],
+    'block-spacing': 'error',
+    'comma-spacing': ['error', { before: false, after: true }],
+    'key-spacing': ['error', { beforeColon: false, afterColon: true }],
+    'space-before-blocks': ['error', 'always'],
+    'spaced-comment': ['error', 'always']
   }
 };
