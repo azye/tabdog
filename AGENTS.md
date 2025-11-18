@@ -70,6 +70,7 @@ tabdog/
 - **escapeHtml()**: Prevents XSS attacks by escaping HTML
 - Individual tab restoration on click
 - **Tab Counter Display**: Shows total count of saved tabs in header
+- **Tab Item Styling**: Uses pseudo-elements for separators to ensure hover backgrounds don't touch the dividing lines
 - **Dark Gruvbox Theme**: Uses authentic Gruvbox color palette with dark backgrounds (#282828, #3c3836), green accents (#8ec07c), and proper text contrast (#ebdbb2, #bdae93)
 
 ### pages/popup.html & src/popup.js (Legacy Popup)
@@ -147,10 +148,10 @@ npm install
 - Maintain consistent indentation and formatting
 - Use Chrome extension APIs exclusively
 - **Linting**: ESLint with standard configuration and comprehensive rules
-- **Lint Scripts**: 
+- **Lint Scripts**:
   - `npm run lint`: Check code style
   - `npm run lint:fix`: Auto-fix linting issues
-- **ESLint Configuration**: 
+- **ESLint Configuration**:
   - Extends standard config with webextensions environment
   - Enforces single quotes, 2-space indentation, semicolons
   - ES2021 syntax support, arrow functions preferred
@@ -202,7 +203,7 @@ savedTabs.forEach(tab => {
 
 // Delete specific session
 function deleteSession(sessionId) {
-  const updatedTabs = savedTabs.filter(tab => 
+  const updatedTabs = savedTabs.filter(tab =>
     String(tab.sessionId) !== String(sessionId)
   );
   chrome.storage.local.set({ savedTabs: updatedTabs }, callback);
@@ -232,7 +233,7 @@ function createTabElement(tab) {
 
 ### Automated Testing
 - **Framework**: Jest with jsdom environment
-- **Test Scripts**: 
+- **Test Scripts**:
   - `npm test`: Run all tests
   - `npm run test:watch`: Run tests in watch mode
 - **Test Coverage**: Tests cover background script logic, tab interface functionality, and Chrome API interactions
@@ -274,7 +275,7 @@ function createTabElement(tab) {
 
 ### Dark Gruvbox Theme
 The extension uses a dark Gruvbox color scheme for both the main tab interface and popup:
-- **Background Colors**: 
+- **Background Colors**:
   - Primary: #282828 (dark background)
   - Secondary: #3c3836 (container background)
   - Tertiary: #504945 (hover states, borders)
