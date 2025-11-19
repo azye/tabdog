@@ -82,6 +82,7 @@ tabdog/
 - **Individual tab restoration on click**
 - **Tab Counter Display**: Shows total count of saved tabs in header
 - **Tab Item Styling**: Uses pseudo-elements for separators to ensure hover backgrounds don't touch the dividing lines
+- **UI Refinements**: Equalized padding for session groups (bottom margin matches top) and enabled text wrapping for tab titles to prevent overflow
 - **Dark Gruvbox Theme**: Uses authentic Gruvbox color palette with dark backgrounds (#282828, #3c3836), green accents (#8ec07c), and proper text contrast (#ebdbb2, #bdae93)
 
 ### pages/popup.html & src/popup.js (Legacy Popup)

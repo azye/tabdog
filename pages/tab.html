@@ -85,15 +85,18 @@
     }
 
     .upload-btn {
-      padding: 15px 30px;
+      padding: 10px;
+      width: 46px;
+      height: 46px;
       background-color: #458588;
       color: #ebdbb2;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
       transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .upload-btn:hover {
@@ -101,15 +104,18 @@
     }
 
     .download-btn {
-      padding: 15px 30px;
+      padding: 10px;
+      width: 46px;
+      height: 46px;
       background-color: #d79921;
       color: #282828;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
       transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .download-btn:hover {
@@ -133,6 +139,10 @@
       transition: background-color 0.2s;
       margin: 5px 0 10px 0;
       border-radius: 4px;
+    }
+
+    .tab-item:last-child {
+      margin-bottom: 5px;
     }
 
     .tab-item::after {
@@ -214,6 +224,7 @@
       font-weight: bold;
       color: #ebdbb2;
       margin-bottom: 4px;
+      word-break: break-all;
     }
 
     .tab-url {
@@ -325,8 +336,22 @@
       <button class="save-btn" id="saveAllTabs">Save & Close All Other Tabs</button>
       <div class="right-actions">
         <input type="file" id="fileInput" style="display: none;" accept=".txt">
-        <button class="upload-btn" id="uploadTabs">Upload</button>
-        <button class="download-btn" id="downloadTabs">Download</button>
+        <button class="upload-btn" id="uploadTabs" title="Upload Session">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+        </button>
+        <button class="download-btn" id="downloadTabs" title="Download Sessions">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+        </button>
         <button class="clear-btn" id="clearAllTabs">Clear All Tabs</button>
       </div>
     </div>
