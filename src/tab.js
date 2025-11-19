@@ -454,7 +454,31 @@ document.addEventListener('DOMContentLoaded', () => {
     tabElement.innerHTML = `
       <div class="tab-title">${escapeHtml(tab.title)}</div>
       <div class="tab-url">${escapeHtml(tab.url)}</div>
+      <button class="copy-btn" title="Copy URL">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </button>
     `;
+
+    const copyBtn = tabElement.querySelector('.copy-btn');
+    copyBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(tab.url).then(() => {
+        // Visual feedback
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        copyBtn.style.color = '#8ec07c';
+
+        setTimeout(() => {
+          copyBtn.innerHTML = originalHTML;
+          copyBtn.style.color = '';
+        }, 1500);
+
+        showMessage('URL copied to clipboard!');
+      });
+    });
 
     tabElement.addEventListener('click', () => {
       chrome.tabs.create({ url: tab.url });

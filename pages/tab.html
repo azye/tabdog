@@ -327,6 +327,35 @@
     .rename-confirm-btn:hover {
       color: #b8bb26;
     }
+
+    /* Copy Button Styles */
+    .copy-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #bdae93;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s, color 0.2s, background-color 0.2s;
+      padding: 6px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .tab-item:hover .copy-btn {
+      opacity: 1;
+    }
+
+    .copy-btn:hover {
+      color: #ebdbb2;
+      background-color: #3c3836;
+    }
   </style>
 </head>
 

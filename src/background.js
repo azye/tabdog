@@ -9,13 +9,13 @@
 // Extension lifecycle: handle installation
 chrome.runtime.onInstalled.addListener(() => {
   console.log('TabDog extension installed');
-  
+
   chrome.contextMenus.create({
     id: 'open-manager',
     title: 'Open Tab Manager',
     contexts: ['action']
   });
-    
+
   chrome.contextMenus.create({
     id: 'separator',
     type: 'separator',
@@ -28,20 +28,20 @@ chrome.runtime.onInstalled.addListener(() => {
     title: 'Save + Close All Tabs',
     contexts: ['action']
   });
-  
+
   chrome.contextMenus.create({
     id: 'save-tabs-except-current',
     title: 'Save + Close All Tabs Except Current Tab',
     contexts: ['action']
   });
-  
+
   chrome.contextMenus.create({
     id: 'save-current-tab',
     title: 'Save + Close Current Tab',
     contexts: ['action']
   });
 
-  
+
   chrome.contextMenus.create({
     id: 'clear-all',
     title: 'Clear All Saved Tabs',
@@ -128,7 +128,7 @@ function saveAndCloseAllTabs() {
 }
 
 // Open or activate the tab manager interface
-function openTabManager(active=true) {
+function openTabManager(active = true) {
   chrome.tabs.query({ url: chrome.runtime.getURL('../pages/tab.html') }, (tabs) => {
     if (tabs.length > 0) {
       // Extension tab exists, make it active
@@ -156,13 +156,13 @@ function saveAndCloseAllTabsExceptCurrent() {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     const extensionUrl = chrome.runtime.getURL('');
     const tabsToSave = tabs.filter(tab => !tab.url.includes(extensionUrl) && !tab.active);
-    
+
     if (tabsToSave.length === 0) {
       console.log('No tabs to save (excluding current tab)');
       openTabManager(false);
       return;
     }
-    
+
     // Create a session group with timestamp
     const sessionId = Date.now();
     const tabDataArray = tabsToSave.map(tab => ({
@@ -172,7 +172,7 @@ function saveAndCloseAllTabsExceptCurrent() {
       timestamp: sessionId,
       sessionId
     }));
-    
+
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
       savedTabs.unshift(...tabDataArray);
@@ -192,16 +192,16 @@ function saveAndCloseAllTabsExceptCurrent() {
 function saveAndCloseCurrentTab() {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs.length === 0) return;
-    
+
     const currentTab = tabs[0];
     const extensionUrl = chrome.runtime.getURL('');
-    
+
     // Don't save extension tabs
     if (currentTab.url.includes(extensionUrl)) {
       console.log('Cannot save extension tab');
       return;
     }
-    
+
     // Create a session group with timestamp
     const sessionId = Date.now();
     const tabData = {
@@ -211,7 +211,7 @@ function saveAndCloseCurrentTab() {
       timestamp: sessionId,
       sessionId
     };
-    
+
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
       savedTabs.unshift(tabData);
