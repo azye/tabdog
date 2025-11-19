@@ -33,6 +33,8 @@ TabDog is a Manifest V3 Chrome extension that allows users to save and organize 
 8. **Icon Action**: Click extension icon to save tabs and open manager tab
 9. **Chrome Page Handling**: Treats chrome:// pages like regular tabs (saved and closed)
 10. **Fire Icon**: Visual representation using detailed fire/torch icon with red/orange colors and green base for tab stashing concept
+11. **Lazy Loading**: Efficiently loads saved sessions in batches to improve performance with large numbers of saved tabs
+
 
 ## File Structure and Responsibilities
 
@@ -61,7 +63,8 @@ tabdog/
 - Web Store fields: `homepage_url`, `author`, `privacy_policy_url`
 
 ### pages/tab.html & src/tab.js (Main Interface)
-- **loadSavedTabs()**: Displays saved tabs grouped by session, updates tab counter
+- **loadSavedTabs()**: Displays saved tabs grouped by session with lazy loading (IntersectionObserver)
+
 - **restoreSession()**: Opens all tabs from a saved session
 - **deleteSession()**: Removes specific session and all its tabs from storage
 - **clearAllTabs()**: Removes all saved tabs from storage
@@ -228,6 +231,30 @@ function createTabElement(tab) {
   return tabElement;
 }
 ```
+
+#### Lazy Loading Pattern
+```javascript
+// Intersection Observer for infinite scroll
+const observer = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    observer.disconnect();
+    renderNextBatch();
+  }
+});
+
+// Render batch of sessions
+function renderBatch() {
+  const batch = items.slice(currentIndex, currentIndex + BATCH_SIZE);
+  // Render items...
+
+  if (hasMore) {
+    // Add sentinel for next trigger
+    container.appendChild(sentinel);
+    observer.observe(sentinel);
+  }
+}
+```
+
 
 ## Testing and Debugging
 

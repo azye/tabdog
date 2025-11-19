@@ -78,7 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Load and display saved tabs grouped by session
+  // Lazy loading state
+  let currentObserver = null;
+  const BATCH_SIZE = 20;
+
+  // Load and display saved tabs grouped by session with lazy loading
   function loadSavedTabs() {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
@@ -102,49 +106,86 @@ document.addEventListener('DOMContentLoaded', () => {
         sessions[sessionId].push(tab);
       });
 
-      Object.keys(sessions).forEach(sessionId => {
-        const sessionTabs = sessions[sessionId];
-        const isGroup = sessionTabs.length > 1 || sessionTabs[0].sessionId;
+      // Get all session IDs (preserving existing sort order of Object.keys)
+      const sessionIds = Object.keys(sessions);
+      let currentIndex = 0;
 
-        if (isGroup) {
-          const sessionElement = document.createElement('div');
-          sessionElement.className = 'session-group';
+      // Cleanup previous observer if it exists
+      if (currentObserver) {
+        currentObserver.disconnect();
+        currentObserver = null;
+      }
 
-          const sessionHeader = document.createElement('div');
-          sessionHeader.className = 'session-header';
-          sessionHeader.innerHTML = `
-            <span>Session (${sessionTabs.length} tabs) - ${new Date(sessionTabs[0].timestamp).toLocaleString()}</span>
-            <div>
-              <button class="delete-session-btn">Delete Session</button>
-              <button class="restore-all-btn">Restore All</button>
-            </div>
-          `;
+      // Function to render a batch of sessions
+      const renderBatch = () => {
+        const batch = sessionIds.slice(currentIndex, currentIndex + BATCH_SIZE);
+        currentIndex += BATCH_SIZE;
 
-          const restoreAllBtn = sessionHeader.querySelector('.restore-all-btn');
-          restoreAllBtn.onclick = () => restoreSession(sessionTabs);
+        batch.forEach(sessionId => {
+          const sessionTabs = sessions[sessionId];
+          const isGroup = sessionTabs.length > 1 || sessionTabs[0].sessionId;
 
-          const deleteSessionBtn = sessionHeader.querySelector('.delete-session-btn');
-          deleteSessionBtn.onclick = () => deleteSession(sessionId);
+          if (isGroup) {
+            const sessionElement = document.createElement('div');
+            sessionElement.className = 'session-group';
 
-          sessionElement.appendChild(sessionHeader);
+            const sessionHeader = document.createElement('div');
+            sessionHeader.className = 'session-header';
+            sessionHeader.innerHTML = `
+              <span>Session (${sessionTabs.length} tabs) - ${new Date(sessionTabs[0].timestamp).toLocaleString()}</span>
+              <div>
+                <button class="delete-session-btn">Delete Session</button>
+                <button class="restore-all-btn">Restore All</button>
+              </div>
+            `;
 
-          const tabContent = document.createElement('div');
-          tabContent.className = 'tab-content';
+            const restoreAllBtn = sessionHeader.querySelector('.restore-all-btn');
+            restoreAllBtn.onclick = () => restoreSession(sessionTabs);
 
-          sessionTabs.forEach(tab => {
+            const deleteSessionBtn = sessionHeader.querySelector('.delete-session-btn');
+            deleteSessionBtn.onclick = () => deleteSession(sessionId);
+
+            sessionElement.appendChild(sessionHeader);
+
+            const tabContent = document.createElement('div');
+            tabContent.className = 'tab-content';
+
+            sessionTabs.forEach(tab => {
+              const tabElement = createTabElement(tab);
+              tabContent.appendChild(tabElement);
+            });
+
+            sessionElement.appendChild(tabContent);
+            tabList.appendChild(sessionElement);
+          } else {
+            // Individual tabs (old format)
+            const tab = sessionTabs[0];
             const tabElement = createTabElement(tab);
-            tabContent.appendChild(tabElement);
-          });
+            tabList.appendChild(tabElement);
+          }
+        });
 
-          sessionElement.appendChild(tabContent);
-          tabList.appendChild(sessionElement);
-        } else {
-          // Individual tabs (old format)
-          const tab = sessionTabs[0];
-          const tabElement = createTabElement(tab);
-          tabList.appendChild(tabElement);
+        // If there are more sessions, add a sentinel for infinite scroll
+        if (currentIndex < sessionIds.length) {
+          const sentinel = document.createElement('div');
+          sentinel.className = 'sentinel';
+          sentinel.style.height = '20px';
+          sentinel.style.margin = '10px 0';
+          tabList.appendChild(sentinel);
+
+          currentObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+              currentObserver.disconnect();
+              sentinel.remove();
+              renderBatch();
+            }
+          });
+          currentObserver.observe(sentinel);
         }
-      });
+      };
+
+      // Initial render
+      renderBatch();
     });
   }
 
@@ -177,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
       const originalLength = savedTabs.length;
-      
+
       // Remove tabs with the specified sessionId
       const updatedTabs = savedTabs.filter(tab => {
         if (sessionId === 'individual') {
@@ -189,9 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
           return String(tab.sessionId) !== String(sessionId);
         }
       });
-      
+
       const deletedCount = originalLength - updatedTabs.length;
-      
+
       chrome.storage.local.set({ savedTabs: updatedTabs }, () => {
         loadSavedTabs();
         showMessage(`Deleted session with ${deletedCount} tabs!`);
