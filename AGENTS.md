@@ -34,6 +34,9 @@ TabDog is a Manifest V3 Chrome extension that allows users to save and organize 
 9. **Chrome Page Handling**: Treats chrome:// pages like regular tabs (saved and closed)
 10. **Fire Icon**: Visual representation using detailed fire/torch icon with red/orange colors and green base for tab stashing concept
 11. **Lazy Loading**: Efficiently loads saved sessions in batches to improve performance with large numbers of saved tabs
+12. **Import/Export**: Backup and restore saved tabs using simple text files
+13. **Session Renaming**: Custom names for sessions via a three-dot menu
+
 
 
 ## File Structure and Responsibilities
@@ -70,8 +73,13 @@ tabdog/
 - **clearAllTabs()**: Removes all saved tabs from storage
 - **createTabElement()**: Creates DOM element for individual tab display
 - **showMessage()**: Displays temporary notification messages
+
 - **escapeHtml()**: Prevents XSS attacks by escaping HTML
-- Individual tab restoration on click
+- **downloadSavedTabs()**: Exports saved tabs to a text file
+- **handleFileUpload()**: Imports tabs from a text file
+- **enableRenameMode()**: Activates inline renaming for sessions
+- **updateSessionName()**: Persists custom session names to storage
+- **Individual tab restoration on click**
 - **Tab Counter Display**: Shows total count of saved tabs in header
 - **Tab Item Styling**: Uses pseudo-elements for separators to ensure hover backgrounds don't touch the dividing lines
 - **Dark Gruvbox Theme**: Uses authentic Gruvbox color palette with dark backgrounds (#282828, #3c3836), green accents (#8ec07c), and proper text contrast (#ebdbb2, #bdae93)
@@ -119,6 +127,16 @@ tabdog/
     }
   ]
 }
+```
+
+### Session Metadata Schema
+```javascript
+{
+  sessionMetadata: {
+    [sessionId]: string // Custom name for the session
+  }
+}
+```
 ```
 
 ### Session Grouping
@@ -296,7 +314,6 @@ function renderBatch() {
 - No cloud sync (local storage only)
 - No tab organization beyond session grouping
 - No search functionality for saved tabs
-- No export/import capabilities
 
 ## UI Theme
 

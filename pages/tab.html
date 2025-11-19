@@ -79,6 +79,43 @@
       background-color: #d65d0e;
     }
 
+    .right-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .upload-btn {
+      padding: 15px 30px;
+      background-color: #458588;
+      color: #ebdbb2;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .upload-btn:hover {
+      background-color: #83a598;
+    }
+
+    .download-btn {
+      padding: 15px 30px;
+      background-color: #d79921;
+      color: #282828;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .download-btn:hover {
+      background-color: #fabd2f;
+    }
+
     .saved-tabs-section {
       margin-top: 30px;
     }
@@ -146,6 +183,7 @@
       cursor: pointer;
       font-size: 12px;
       transition: background-color 0.3s;
+      margin-left: 8px;
     }
 
     .restore-all-btn:hover {
@@ -190,6 +228,94 @@
       color: #bdae93;
       font-style: italic;
     }
+
+    /* Menu Styles */
+    .session-menu-container {
+      position: relative;
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: #ebdbb2;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 0 8px;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
+    .menu-btn:hover {
+      color: #8ec07c;
+    }
+
+    .menu-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background-color: #3c3836;
+      min-width: 160px;
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      border: 1px solid #504945;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+
+    .menu-content.show {
+      display: block;
+    }
+
+    .menu-item {
+      color: #ebdbb2;
+      padding: 10px 16px;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: normal;
+      text-align: left;
+    }
+
+    .menu-item:hover {
+      background-color: #504945;
+    }
+
+    /* Rename Styles */
+    .rename-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .rename-input {
+      background-color: #282828;
+      border: 1px solid #504945;
+      color: #ebdbb2;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+      font-size: 14px;
+      width: 200px;
+    }
+
+    .rename-confirm-btn {
+      background: none;
+      border: none;
+      color: #8ec07c;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 8px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .rename-confirm-btn:hover {
+      color: #b8bb26;
+    }
   </style>
 </head>
 
@@ -197,7 +323,12 @@
   <div class="container">
     <div class="button-section">
       <button class="save-btn" id="saveAllTabs">Save & Close All Other Tabs</button>
-      <button class="clear-btn" id="clearAllTabs">Clear All Tabs</button>
+      <div class="right-actions">
+        <input type="file" id="fileInput" style="display: none;" accept=".txt">
+        <button class="upload-btn" id="uploadTabs">Upload</button>
+        <button class="download-btn" id="downloadTabs">Download</button>
+        <button class="clear-btn" id="clearAllTabs">Clear All Tabs</button>
+      </div>
     </div>
 
     <div class="saved-tabs-section">
