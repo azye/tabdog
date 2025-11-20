@@ -64,15 +64,18 @@
     }
 
     .clear-btn {
-      padding: 15px 30px;
+      padding: 10px;
+      width: 46px;
+      height: 46px;
       background-color: #cc241d;
       color: #ebdbb2;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
       transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .clear-btn:hover {
@@ -381,7 +384,13 @@
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
         </button>
-        <button class="clear-btn" id="clearAllTabs">Clear All Tabs</button>
+        <button class="clear-btn" id="clearAllTabs" title="Clear All Tabs">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+          </svg>
+        </button>
       </div>
     </div>
 

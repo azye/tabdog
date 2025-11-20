@@ -62,7 +62,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       saveAndCloseCurrentTab();
       break;
     case 'open-manager':
-      openTabManager();
+      openTabManager(true, tab.windowId);
       break;
     case 'clear-all':
       clearAllSavedTabs();
@@ -80,7 +80,9 @@ chrome.commands.onCommand.addListener((command) => {
       saveAndCloseAllTabsExceptCurrent();
       break;
     case 'open-manager':
-      openTabManager();
+      chrome.windows.getCurrent((win) => {
+        openTabManager(true, win.id);
+      });
       break;
     case 'save-current-tab':
       saveAndCloseCurrentTab();
@@ -96,11 +98,13 @@ chrome.action.onClicked.addListener((tab) => {
 // Save all non-extension tabs to storage and close them
 function saveAndCloseAllTabs() {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    if (tabs.length === 0) return;
+    const currentWindowId = tabs[0].windowId;
     const extensionUrl = chrome.runtime.getURL('');
     const tabsToSave = tabs.filter(tab => !tab.url.includes(extensionUrl));
 
     if (tabsToSave.length === 0) {
-      openTabManager();
+      openTabManager(true, currentWindowId);
       return;
     }
 
@@ -117,7 +121,7 @@ function saveAndCloseAllTabs() {
     chrome.storage.local.get(['savedTabs'], (result) => {
       const savedTabs = result.savedTabs || [];
       savedTabs.unshift(...tabDataArray);
-      openTabManager();
+      openTabManager(true, currentWindowId);
       chrome.storage.local.set({ savedTabs }, () => {
         // Close all non-extension tabs in reverse order so Ctrl+Shift+T restores them correctly
         const tabIdsToClose = tabsToSave.map(tab => tab.id).reverse();
@@ -128,25 +132,47 @@ function saveAndCloseAllTabs() {
 }
 
 // Open or activate the tab manager interface
-function openTabManager(active = true) {
+function openTabManager(active = true, targetWindowId = null) {
   chrome.tabs.query({ url: chrome.runtime.getURL('../pages/tab.html') }, (tabs) => {
     if (tabs.length > 0) {
-      // Extension tab exists, make it active
-      // chrome.tabs.update(tabs[0].id, { active: true });
+      const tab = tabs[0];
+
+      const updateAndReload = (tabId, windowId) => {
+        if (active) {
+          chrome.tabs.update(tabId, { active: true });
+          chrome.windows.update(windowId, { focused: true });
+        }
+        chrome.tabs.reload(tabId);
+      };
+
+      // If targetWindowId is specified and different, move the tab
+      if (targetWindowId && tab.windowId !== targetWindowId) {
+        chrome.tabs.move(tab.id, { windowId: targetWindowId, index: -1 }, (movedTab) => {
+          // chrome.tabs.move returns the moved tab (or tabs)
+          // Note: movedTab might be an array if multiple tabs moved, but here it's one ID
+          const actualTab = Array.isArray(movedTab) ? movedTab[0] : movedTab;
+          updateAndReload(actualTab.id, actualTab.windowId);
+        });
+      } else {
+        updateAndReload(tab.id, tab.windowId);
+      }
+
       // Close any additional extension tabs
       if (tabs.length > 1) {
-        const tabsToClose = tabs.slice(1).map(tab => tab.id);
+        const tabsToClose = tabs.slice(1).map(t => t.id);
         chrome.tabs.remove(tabsToClose);
       }
-      // Reload the existing extension tab to update content
-      chrome.tabs.reload(tabs[0].id);
     } else {
       // No extension tab exists, create new one
-      chrome.tabs.create({
+      const createProps = {
         url: chrome.runtime.getURL('../pages/tab.html'),
         active: active,
         pinned: true
-      });
+      };
+      if (targetWindowId) {
+        createProps.windowId = targetWindowId;
+      }
+      chrome.tabs.create(createProps);
     }
   });
 }
@@ -154,12 +180,14 @@ function openTabManager(active = true) {
 // Save all non-extension tabs except the current one and close them
 function saveAndCloseAllTabsExceptCurrent() {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    if (tabs.length === 0) return;
+    const currentWindowId = tabs[0].windowId;
     const extensionUrl = chrome.runtime.getURL('');
     const tabsToSave = tabs.filter(tab => !tab.url.includes(extensionUrl) && !tab.active);
 
     if (tabsToSave.length === 0) {
       console.log('No tabs to save (excluding current tab)');
-      openTabManager(false);
+      openTabManager(false, currentWindowId);
       return;
     }
 
@@ -181,7 +209,7 @@ function saveAndCloseAllTabsExceptCurrent() {
         const tabIdsToClose = tabsToSave.map(tab => tab.id).reverse();
         chrome.tabs.remove(tabIdsToClose, () => {
           // Small delay to ensure storage is fully updated before opening manager
-          setTimeout(() => openTabManager(false), 100);
+          setTimeout(() => openTabManager(false, currentWindowId), 100);
         });
       });
     });
@@ -194,6 +222,7 @@ function saveAndCloseCurrentTab() {
     if (tabs.length === 0) return;
 
     const currentTab = tabs[0];
+    const currentWindowId = currentTab.windowId;
     const extensionUrl = chrome.runtime.getURL('');
 
     // Don't save extension tabs
@@ -217,7 +246,7 @@ function saveAndCloseCurrentTab() {
       savedTabs.unshift(tabData);
       chrome.storage.local.set({ savedTabs }, () => {
         // Open extension tab in background
-        openTabManager(false);
+        openTabManager(false, currentWindowId);
         // Close current tab - Chrome will automatically activate next tab
         chrome.tabs.remove(currentTab.id);
       });
