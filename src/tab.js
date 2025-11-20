@@ -157,6 +157,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Export a single session
+  function exportSession(sessionTabs, sessionName) {
+    let content = '';
+    const timestamp = sessionTabs[0].timestamp;
+    const dateStr = new Date(timestamp).toLocaleString();
+
+    // Header: date - session name
+    let header = dateStr;
+    if (sessionName) {
+      header += ` - ${sessionName}`;
+    }
+
+    content += header + '\n';
+    sessionTabs.forEach(tab => {
+      content += tab.url + '\n';
+    });
+    content += '\n';
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", url);
+
+    // Create a filename based on session name or date
+    const safeName = (sessionName || 'session').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const date = new Date().toISOString().slice(0, 10);
+    downloadAnchorNode.setAttribute("download", `tabdog_${safeName}_${date}.txt`);
+
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    URL.revokeObjectURL(url);
+  }
+
   // Handle file upload for importing tabs
   // Parses text file with "Date - Name" headers and URLs
   function handleFileUpload(event) {
@@ -373,6 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <button class="menu-btn">⋮</button>
                   <div class="menu-content">
                     <div class="menu-item rename-session-btn">Rename Session</div>
+                    <div class="menu-item export-session-btn">Export Session</div>
                   </div>
                 </div>
               </div>
@@ -387,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const menuBtn = sessionHeader.querySelector('.menu-btn');
             const menuContent = sessionHeader.querySelector('.menu-content');
             const renameBtn = sessionHeader.querySelector('.rename-session-btn');
+            const exportBtn = sessionHeader.querySelector('.export-session-btn');
 
             menuBtn.onclick = (e) => {
               e.stopPropagation();
@@ -401,6 +437,12 @@ document.addEventListener('DOMContentLoaded', () => {
               e.stopPropagation();
               menuContent.classList.remove('show');
               enableRenameMode(sessionHeader, sessionId, sessionName, sessionTabs.length, timestamp);
+            };
+
+            exportBtn.onclick = (e) => {
+              e.stopPropagation();
+              menuContent.classList.remove('show');
+              exportSession(sessionTabs, sessionMetadata[sessionId]);
             };
 
             sessionElement.appendChild(sessionHeader);
